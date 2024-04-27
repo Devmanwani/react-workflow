@@ -23,6 +23,9 @@ const SideBar = () => {
       <div className="dndnode border-2 border-gray-500 p-2 rounded-md my-2 cursor-move" onDragStart={(event) => onDragStart(event, 'default', 'Convert')} draggable>
         Convert
       </div>
+      <div className="dndnode border-2 border-gray-500 p-2 rounded-md my-2 cursor-move" onDragStart={(event) => onDragStart(event, 'default', 'Post')} draggable>
+        Convert
+      </div>
       <div className="dndnode output border-2 border-red-500 p-2 rounded-md my-2 cursor-move" onDragStart={(event) => onDragStart(event, 'output', 'Stop')} draggable>
         Stop
       </div>
