@@ -44,17 +44,15 @@ const Upload: React.FC = () => {
     }
 
     formData.append('selectedArray', JSON.stringify(selectedArray));
+    
 
     try {
-      const response = await fetch('/api/upload', {
+      const response = await fetch('http://localhost:3000/upload', {
         method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        body: formData
       });
       if (response.ok) {
-        console.log('File uploaded successfully');
+        alert('Process completed successfully!')
       } else {
         console.error('Failed to upload file');
       }
