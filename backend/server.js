@@ -17,30 +17,22 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const file = req.file;
     const selectedArray = JSON.parse(req.body.selectedArray);
-
+    console.log(selectedArray);
     if (!file) {
       return res.status(400).json({ message: 'Missing file' });
     }
 
-    console.log('File object:', file);
-console.log('File buffer:', file.buffer);
+    const filePath = `tmp/${file.originalname}`;
+    const fileContent = fs.readFileSync(file.path);
+    await fs.promises.writeFile(filePath, fileContent);
 
-   
-   
-const filePath = `tmp/${file.originalname}`;
+    let success = true;
 
-// Read the file content from the temporary path
-const fileContent = fs.readFileSync(file.path);
-
-// Write the file content to the desired location
-await fs.promises.writeFile(filePath, fileContent);
+    // Perform all operations before responding
     for (const element of selectedArray) {
       switch (element) {
-        case 'filter data':
-          // Access the uploaded CSV data (converted to JSON)
+        case 'Filter Data':
           const jsonData = await csvtojson().fromFile(filePath);
-
-          // Function to convert all column values in an object to lowercase
           const toLowerCaseObject = (obj) => {
             const newObj = {};
             for (const key in obj) {
@@ -50,20 +42,14 @@ await fs.promises.writeFile(filePath, fileContent);
             }
             return newObj;
           };
-
-          // Apply the conversion function to each object in the JSON array
           const filteredData = jsonData.map(toLowerCaseObject);
-
-          // Now you have the filtered data with lowercase column values in 'filteredData'
           console.log('Filtered data (lowercase):', filteredData);
-
           // Perform further operations on the filtered data as needed (optional)
           break;
-        case 'wait':
+        case 'Wait':
           await new Promise(resolve => setTimeout(resolve, 60000));
           break;
-        case 'convert':
-          // Ensure csvtojson Promise is resolved properly
+        case 'Convert':
           const json = await csvtojson().fromFile(filePath).catch(error => {
             console.error('Error converting CSV to JSON:', error);
             throw error;
@@ -73,12 +59,17 @@ await fs.promises.writeFile(filePath, fileContent);
             // Perform further operations with the JSON data
           }
           break;
-        case 'post':
-          // Ensure json is defined before using
-          if (json) {
-            await axios.post('https://example.com/api', json);
-          } else {
+        case 'Post':
+          if (!json) {
             console.error('JSON data not available to post');
+            success = false;
+            break;
+          }
+          try {
+            await axios.post('https://example.com/api', json);
+          } catch (error) {
+            console.error('Error posting JSON data:', error);
+            success = false;
           }
           break;
         default:
@@ -87,7 +78,11 @@ await fs.promises.writeFile(filePath, fileContent);
       }
     }
 
-    res.json({ message: 'File uploaded and operations completed successfully' });
+    if (success) {
+      res.json({ message: 'File uploaded and operations completed successfully' });
+    } else {
+      res.status(500).json({ message: 'Failed to upload file and perform operations' });
+    }
   } catch (error) {
     console.error('Error uploading file and performing operations:', error);
     res.status(500).json({ message: 'Failed to upload file and perform operations' });
