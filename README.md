@@ -30,7 +30,7 @@ This is a simple web application for uploading CSV files, processing them, and p
 5. Navigate to the frontend directory: `cd frontend`
 6. Install frontend dependencies: `npm install`
 7. Start the frontend server: `npm start`
-8. Access the application in your web browser at `http://localhost:3000`
+8. Access the application in your web browser at `http://localhost:3001`
 
 ## Usage
 
@@ -38,7 +38,8 @@ This is a simple web application for uploading CSV files, processing them, and p
 2. Select a workflow ID from the dropdown menu.
 3. Click the "Start Workflow" button to upload the file and initiate processing.
 4. Monitor the console logs for progress and any errors.
-
+5. The file will be saved in tmp folder in the backend
+6. a success/failure message will be shown after the process happen
 ## Contributing
 
 Contributions are welcome! Feel free to submit pull requests or open issues for any improvements or bug fixes.
